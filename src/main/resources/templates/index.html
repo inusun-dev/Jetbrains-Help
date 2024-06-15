@@ -38,9 +38,11 @@
                 <div class="pd-6 overflow-hidden bg-card container radius-1">
                     <h1 class="truncate truncate-1 color-primary mt-0 overflow-ellipsis" th:title="${product.getName()}"
                         th:text="${product.getName()}"></h1>
-                    <p title="Copy to clipboard" class="truncate text-sm text-grey" onclick="copyLicense(this)"
-                       data-content="Copy to clipboard">
-                        **********
+                    <p title="Copy to clipboard" class="truncate text-sm text-grey copyLicense" onclick="copyLicense(this)"
+                       data-content="Copy to clipboard...">
+                        ******************************************
+                        ******************************************
+                        ******************************************
                     </p>
                 </div>
                 <div class="mask"></div>

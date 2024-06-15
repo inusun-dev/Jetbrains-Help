@@ -1,4 +1,6 @@
-$(document).ready(function() {
+// import {$} from './jquery';
+
+$(document).ready(function () {
     // Set default headers for AJAX requests
     $.ajaxSetup({
         headers: {
@@ -18,7 +20,7 @@ $(document).ready(function() {
     };
 
     // Function to handle search input
-    $('#search').on('input', function(e) {
+    $('#search').on('input', function (e) {
         $("#product-list").load('/search?search=' + e.target.value);
     });
 
@@ -55,21 +57,59 @@ $(document).ready(function() {
         $.post('/generateLicense', JSON.stringify(data))
             .then(response => {
                 copyText(response)
-                    .then((result) => {
-                        alert(result);
-                    });
             });
     };
 
 // Function to copy text to clipboard
     const copyText = async (val) => {
-        if (navigator.clipboard && navigator.permissions) {
+        if (navigator.clipboard && window.isSecureContext) {
             await navigator.clipboard.writeText(val);
-            return "The activation code has been copied";
+            showMessage('The activation code has been copied', 1);
         } else {
-            console.log(val);
-            return "The system does not support it, please go to the console to copy it manually";
+            try {
+                const textArea = document.createElement('textarea');
+                textArea.value = val;
+                // 使text area不在viewport，同时设置不可见
+                textArea.style.position = 'fixed';
+                textArea.style.top = '0';
+                textArea.style.left = '0';
+                textArea.style.width = '1px';
+                textArea.style.height = '1px';
+                textArea.style.padding = '0';
+                textArea.style.border = 'none';
+                textArea.style.outline = 'none';
+                textArea.style.boxShadow = 'none';
+                textArea.style.background = 'transparent';
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showMessage('The activation code has been copied', 1);
+            } catch (error) {
+                console.error(error);
+                showMessage('The system does not support it, please go to the console to copy it manually', 0);
+            }
         }
     };
 
+    function showMessage(message, type) {
+        if (type === 0) {
+            alert(message)
+        } else if (type === 1) {
+            console.log("Copied!")
+            $(".copyLicense").attr("data-content", "Copied!")
+        }
+    }
+
+    $(function () {
+        $(".copyLicense").on({
+            mouseover: function () {
+            },
+            mouseout: function () {
+                console.log("Copy to clipboard")
+                $(".copyLicense").attr("data-content", "Copy to clipboard")
+            }
+        });
+    });
 });
